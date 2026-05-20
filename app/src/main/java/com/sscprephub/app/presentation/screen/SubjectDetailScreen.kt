@@ -38,12 +38,12 @@ fun SubjectDetailScreen(
     var searchQuery by remember { mutableStateOf("") }
     var selectedFilterTab by remember { mutableIntStateOf(0) } // 0 = All, 1 = Pending, 2 = Completed
 
-    // Sync screen state with ViewModel data pipeline
+    // Sync screen state with view model pipeline names
     LaunchedEffect(subjectId) {
-        viewModel.loadTopicsForSubject(subjectId)
+        viewModel.getTopicsBySubject(subjectId)
     }
 
-    val topics by viewModel.topicsForSelectedSubject.collectAsState()
+    val topics by viewModel.topicsList.collectAsState()
 
     // Filter logic based on tab selections and search string
     val filteredTopics = remember(topics, searchQuery, selectedFilterTab) {
@@ -72,7 +72,7 @@ fun SubjectDetailScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // 1. FAST NAVIGATION SHORTCUT BAR
+            // 1. NAVIGATION SHORTCUT BAR
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -127,7 +127,7 @@ fun SubjectDetailScreen(
 
             // 3. LAZY LIST DISPATCHER
             if (filteredTopics.isEmpty()) {
-                val message = if (searchQuery.isNotEmpty()) "No topics match your search criteria." else "No topics found in this category."
+                val message = if (searchQuery.isNotEmpty()) "No topics match your search." else "No topics found here."
                 EmptyState(
                     message = message,
                     icon = Icons.Default.SearchOff,
@@ -141,11 +141,11 @@ fun SubjectDetailScreen(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    items(filteredTopics, key = { it.id }) { topic ->
+                    items(filteredTopics, key = { topicEntity: TopicEntity -> topicEntity.id }) { topic ->
                         TopicRowItem(
                             topic = topic,
                             onItemClick = { onTopicClick(topic.id, topic.name) },
-                            onToggleCompletion = { viewModel.toggleTopicCompletion(topic) }
+                            onToggleCompletion = { viewModel.toggleTopicStatus(topic.id, topic.isCompleted) }
                         )
                     }
                 }
@@ -189,7 +189,7 @@ fun TopicRowItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                if (topic.importantNotes.isNotEmpty()) {
+                if (topic.notes.isNotEmpty()) {
                     Text(
                         text = "Contains notes & key insights",
                         style = MaterialTheme.typography.labelSmall,

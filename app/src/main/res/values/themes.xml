@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+   <resources>
+       <!-- Base application theme that the resource compiler is looking for -->
+       <style name="Theme.AppCompat.Light.NoActionBar" parent="@android:style/Theme.DeviceDefault.NoActionBar" />
+   </resources>

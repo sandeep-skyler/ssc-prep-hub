@@ -21,7 +21,6 @@ import com.sscprephub.app.presentation.components.AppTopBar
 import com.sscprephub.app.presentation.components.CompletionToggle
 import com.sscprephub.app.presentation.components.EmptyState
 import com.sscprephub.app.presentation.components.SearchBar
-import com.sscprephub.app.presentation.theme.ProgressGreen
 import com.sscprephub.app.presentation.viewmodel.PrepViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,26 +34,24 @@ fun SubjectDetailScreen(
     onManagePyqClick: () -> Unit,
     onManagePlaylistsClick: () -> Unit
 ) {
-    var searchQuery by remember { mutableStateOf("") }
     var selectedFilterTab by remember { mutableIntStateOf(0) } // 0 = All, 1 = Pending, 2 = Completed
+    val searchQuery by viewModel.topicSearchQuery.collectAsState()
 
-    // Sync screen state with view model pipeline names
+    // Sync subject selection into ViewModel pipeline
     LaunchedEffect(subjectId) {
-        viewModel.getTopicsBySubject(subjectId)
+        viewModel.selectSubject(subjectId)
     }
 
-    val topics by viewModel.topicsList.collectAsState()
+    val topics by viewModel.currentTopicsList.collectAsState()
 
-    // Filter logic based on tab selections and search string
-    val filteredTopics = remember(topics, searchQuery, selectedFilterTab) {
+    // Filter topics down to tabs on the client side
+    val filteredTopics = remember(topics, selectedFilterTab) {
         topics.filter { topic ->
-            val matchesSearch = topic.name.contains(searchQuery, ignoreCase = true)
-            val matchesTab = when (selectedFilterTab) {
+            when (selectedFilterTab) {
                 1 -> !topic.isCompleted
                 2 -> topic.isCompleted
                 else -> true
             }
-            matchesSearch && matchesTab
         }
     }
 
@@ -72,7 +69,7 @@ fun SubjectDetailScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // 1. NAVIGATION SHORTCUT BAR
+            // 1. QUICK NAVIGATION SHORTCUTS
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -83,7 +80,10 @@ fun SubjectDetailScreen(
                     onClick = onManagePyqClick,
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer, contentColor = MaterialTheme.colorScheme.onSecondaryContainer)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
                 ) {
                     Icon(Icons.Default.Description, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(8.dp))
@@ -94,7 +94,10 @@ fun SubjectDetailScreen(
                     onClick = onManagePlaylistsClick,
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer, contentColor = MaterialTheme.colorScheme.onTertiaryContainer)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
                 ) {
                     Icon(Icons.Default.PlayCircle, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(8.dp))
@@ -102,10 +105,10 @@ fun SubjectDetailScreen(
                 }
             }
 
-            // 2. SEARCH & FILTER INTERFACES
+            // 2. LIVE QUERY SEARCH & STATE TABS
             SearchBar(
                 query = searchQuery,
-                onQueryChange = { searchQuery = it },
+                onQueryChange = { viewModel.updateTopicSearch(it) },
                 placeholder = "Search topics in $subjectName...",
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
@@ -125,11 +128,11 @@ fun SubjectDetailScreen(
                 }
             }
 
-            // 3. LAZY LIST DISPATCHER
+            // 3. CORE SCROLL CONTAINER
             if (filteredTopics.isEmpty()) {
-                val message = if (searchQuery.isNotEmpty()) "No topics match your search." else "No topics found here."
+                val msg = if (searchQuery.isNotEmpty()) "No topics match your search criteria." else "No topics found here."
                 EmptyState(
-                    message = message,
+                    message = msg,
                     icon = Icons.Default.SearchOff,
                     modifier = Modifier.weight(1f)
                 )
@@ -141,11 +144,11 @@ fun SubjectDetailScreen(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    items(filteredTopics, key = { topicEntity: TopicEntity -> topicEntity.id }) { topic ->
+                    items(items = filteredTopics, key = { it.id }) { topic ->
                         TopicRowItem(
                             topic = topic,
                             onItemClick = { onTopicClick(topic.id, topic.name) },
-                            onToggleCompletion = { viewModel.toggleTopicStatus(topic.id, topic.isCompleted) }
+                            onToggleCompletion = { viewModel.toggleTopicCompletion(topic.id, !topic.isCompleted) }
                         )
                     }
                 }
@@ -154,9 +157,6 @@ fun SubjectDetailScreen(
     }
 }
 
-// ------------------------------------------------------------------------
-// TOPIC ROW SELECTION SUB-ITEM
-// ------------------------------------------------------------------------
 @Composable
 fun TopicRowItem(
     topic: TopicEntity,
@@ -189,17 +189,10 @@ fun TopicRowItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                if (topic.notes.isNotEmpty()) {
-                    Text(
-                        text = "Contains notes & key insights",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
             }
             Icon(
                 imageVector = Icons.Default.ChevronRight,
-                contentDescription = "Open Topic Workspace",
+                contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                 modifier = Modifier.size(20.dp)
             )

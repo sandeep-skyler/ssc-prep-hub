@@ -12,6 +12,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Provider
 import javax.inject.Singleton
@@ -23,8 +24,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideApplicationScope(): CoroutineScope {
-        // Creates a scope tied directly to the lifetime of the App application process
-        return CoroutineScope(SupervisorJob() + Dispatchers.Default)
+        // Correct syntax order: CoroutineDispatcher + Job element
+        return CoroutineScope(Dispatchers.Default + SupervisorJob())
     }
 
     @Provides
@@ -48,7 +49,7 @@ object AppModule {
             "ssc_prep_hub.db"
         )
         .addCallback(callback)
-        .fallbackToDestructiveMigration() // Safely clears db locally if entity structures change during development
+        .fallbackToDestructiveMigration()
         .build()
     }
 

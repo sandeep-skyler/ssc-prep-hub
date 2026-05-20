@@ -27,3 +27,9 @@ jobs:
 
     - name: Run complete build compile check
       run: gradle assembleDebug
+      
+    - name: Upload Installable APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: ssc-prep-hub-app
+        path: app/build/outputs/apk/debug/app-debug.apk

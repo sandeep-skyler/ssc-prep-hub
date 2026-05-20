@@ -1,37 +1,19 @@
 // Location: app/src/main/java/com/sscprephub/app/presentation/ScreenDestination.kt
 package com.sscprephub.app.presentation
 
-import kotlinx.serialization.Serializable
-
-sealed interface ScreenDestination {
+object ScreenDestination {
+    const val DASHBOARD = "dashboard"
+    const val GLOBAL_BOOKMARKS = "global_bookmarks"
     
-    @Serializable
-    data object Dashboard : ScreenDestination
+    const val SUBJECT_DETAIL = "subject_detail/{subjectId}/{subjectName}"
+    fun createSubjectDetailRoute(id: Int, name: String) = "subject_detail/$id/$name"
 
-    @Serializable
-    data class SubjectDetail(
-        val subjectId: Int,
-        val subjectName: String
-    ) : ScreenDestination
+    const val TOPIC_DETAIL = "topic_detail/{topicId}/{topicName}"
+    fun createTopicDetailRoute(id: Int, name: String) = "topic_detail/$id/$name"
 
-    @Serializable
-    data class TopicDetail(
-        val topicId: Int,
-        val topicName: String
-    ) : ScreenDestination
+    const val PYQ_PAPER_LIST = "pyq_paper_list/{topicId}/{topicName}"
+    fun createPyqPaperListRoute(id: Int, name: String) = "pyq_paper_list/$id/$name"
 
-    @Serializable
-    data class PYQPaperList(
-        val topicId: Int,
-        val topicName: String
-    ) : ScreenDestination
-
-    @Serializable
-    data class VideoPlaylist(
-        val topicId: Int,
-        val topicName: String
-    ) : ScreenDestination
-
-    @Serializable
-    data object GlobalBookmarks : ScreenDestination
+    const val VIDEO_PLAYLIST = "video_playlist/{topicId}/{topicName}"
+    fun createVideoPlaylistRoute(id: Int, name: String) = "video_playlist/$id/$name"
 }

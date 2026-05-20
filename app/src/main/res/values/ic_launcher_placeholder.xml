@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Temporary vector placeholders for icons to prevent compilation errors -->
+    <string name="app_name">SSC Prep Hub</string>
+    <item name="ic_launcher" type="mipmap">@android:drawable/sym_def_app_icon</item>
+    <item name="ic_launcher_round" type="mipmap">@android:drawable/sym_def_app_icon</item>
+</resources>

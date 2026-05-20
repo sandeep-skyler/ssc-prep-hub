@@ -29,8 +29,8 @@ fun AppNavigationGraph(
                 onSubjectClick = { id, name ->
                     navController.navigate(ScreenDestination.createSubjectDetailRoute(id, name))
                 },
-                onRecentTopicClick = { id, name ->
-                    navController.navigate(ScreenDestination.createTopicDetailRoute(id, name))
+                onRecentTopicClick = { topicId, topicName, subjectName ->
+                    navController.navigate(ScreenDestination.createTopicDetailRoute(topicId, topicName))
                 }
             )
         }

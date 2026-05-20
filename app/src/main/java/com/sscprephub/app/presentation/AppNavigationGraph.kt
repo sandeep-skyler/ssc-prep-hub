@@ -23,16 +23,18 @@ fun AppNavigationGraph(
         modifier = modifier
     ) {
         // 1. MAIN METRICS DASHBOARD (Mapped to HomeScreen)
+        // 1. MAIN METRICS DASHBOARD (Mapped to HomeScreen)
         composable(ScreenDestination.DASHBOARD) {
             HomeScreen(
                 viewModel = viewModel,
                 onSubjectClick = { id, name ->
                     navController.navigate(ScreenDestination.createSubjectDetailRoute(id, name))
                 },
-                onBookmarksClick = {
-                    navController.navigate(ScreenDestination.GLOBAL_BOOKMARKS)
+                onRecentTopicClick = { id, name ->
+                    navController.navigate(ScreenDestination.createTopicDetailRoute(id, name))
                 }
             )
+        }
         }
 
         // 2. SUBJECT DETAILS TRACKER

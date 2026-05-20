@@ -22,8 +22,7 @@ fun AppNavigationGraph(
         startDestination = ScreenDestination.DASHBOARD,
         modifier = modifier
     ) {
-        // 1. MAIN METRICS DASHBOARD (Mapped to HomeScreen)
-        // 1. MAIN METRICS DASHBOARD (Mapped to HomeScreen)
+        // 1. MAIN METRICS DASHBOARD
         composable(ScreenDestination.DASHBOARD) {
             HomeScreen(
                 viewModel = viewModel,
@@ -34,7 +33,6 @@ fun AppNavigationGraph(
                     navController.navigate(ScreenDestination.createTopicDetailRoute(id, name))
                 }
             )
-        }
         }
 
         // 2. SUBJECT DETAILS TRACKER
@@ -122,7 +120,6 @@ fun AppNavigationGraph(
             )
         }
 
-        // 6. GLOBAL SAVED REVISION DASHBOARD (Mapped to BookmarksScreen)
         // 6. GLOBAL SAVED REVISION DASHBOARD
         composable(ScreenDestination.GLOBAL_BOOKMARKS) {
             GlobalBookmarksScreen(

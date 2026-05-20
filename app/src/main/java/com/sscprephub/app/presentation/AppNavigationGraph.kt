@@ -123,8 +123,9 @@ fun AppNavigationGraph(
         }
 
         // 6. GLOBAL SAVED REVISION DASHBOARD (Mapped to BookmarksScreen)
+        // 6. GLOBAL SAVED REVISION DASHBOARD
         composable(ScreenDestination.GLOBAL_BOOKMARKS) {
-            BookmarksScreen(
+            GlobalBookmarksScreen(
                 viewModel = viewModel,
                 onBackClick = { navController.popBackStack() }
             )

@@ -20,14 +20,8 @@ jobs:
         distribution: 'zulu'
         java-version: '17'
 
-    - name: Generate Wrapper Binaries
-      run: gradle wrapper --gradle-version 8.2
-
-    - name: Validate Gradle Wrapper Jar Integrity
-      uses: gradle/actions/wrapper-validation@v3
-
-    - name: Grant execute permission for Gradle wrapper
-      run: chmod +x gradlew
-
-    - name: Run complete build compile check
-      run: ./gradlew assembleDebug
+    - name: Setup and Run Gradle Build
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        gradle-version: 8.2.1
+        arguments: assembleDebug

@@ -22,14 +22,14 @@ fun AppNavigationGraph(
         startDestination = ScreenDestination.DASHBOARD,
         modifier = modifier
     ) {
-        // 1. MAIN METRICS DASHBOARD
+        // 1. MAIN METRICS DASHBOARD (Mapped to HomeScreen)
         composable(ScreenDestination.DASHBOARD) {
-            DashboardScreen(
+            HomeScreen(
                 viewModel = viewModel,
                 onSubjectClick = { id, name ->
                     navController.navigate(ScreenDestination.createSubjectDetailRoute(id, name))
                 },
-                onBookmarksActionClick = {
+                onBookmarksClick = {
                     navController.navigate(ScreenDestination.GLOBAL_BOOKMARKS)
                 }
             )
@@ -120,9 +120,9 @@ fun AppNavigationGraph(
             )
         }
 
-        // 6. GLOBAL SAVED REVISION DASHBOARD
+        // 6. GLOBAL SAVED REVISION DASHBOARD (Mapped to BookmarksScreen)
         composable(ScreenDestination.GLOBAL_BOOKMARKS) {
-            GlobalBookmarksScreen(
+            BookmarksScreen(
                 viewModel = viewModel,
                 onBackClick = { navController.popBackStack() }
             )

@@ -24,8 +24,9 @@ import java.util.regex.Pattern
 // YOUTUBE UTIL UTILITIES
 // ------------------------------------------------------------------------
 object YouTubeUrlParser {
+    // Fixed using a raw triple-quoted string to handle regex characters cleanly without illegal slashes
     private val videoIdPattern = Pattern.compile(
-        "(?:https?:\\/\\/)?(?:www\\.)?(?:youtube\\.com\\/(?:[^\\/\\n\\s]+\\/\\S+\\/|(?:v|e(?:mbed)?)\\\/|\\S*?wi*d\\=?|[^\\/\\n\\s]*#\\/\\S+\\/)|youtu\\.be\\/)([a-zA-Z0-9_-]{11})",
+        """(?:https?://)?(?:www\.)?(?:youtube\.com/(?:[^/\n\s]+/\S+/|(?:v|e(?:mbed)?)/|\S*?wi*d=?|[^/\n\s]*#/\S+/)|youtu\.be/)([a-zA-Z0-9_-]{11})""",
         Pattern.CASE_INSENSITIVE
     )
 
@@ -118,7 +119,7 @@ fun EmptyState(
 ) {
     Column(
         modifier = modifier
-            .fill要因Width()
+            .fillMaxWidth() // Fixed text artifact here
             .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center

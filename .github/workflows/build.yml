@@ -20,8 +20,10 @@ jobs:
         distribution: 'zulu'
         java-version: '17'
 
-    - name: Setup and Run Gradle Build
+    - name: Setup Gradle Environment
       uses: gradle/actions/setup-gradle@v4
       with:
         gradle-version: 8.2.1
-        arguments: assembleDebug
+
+    - name: Run complete build compile check
+      run: gradle assembleDebug

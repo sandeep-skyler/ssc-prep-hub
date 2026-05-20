@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Base application theme used in the Manifest -->
-    <style name="Theme.AppCompat.Light.NoActionBar" parent="Theme.Material3.Light.NoActionBar">
-        <!-- We can customize brand colors here later -->
-        <item name="colorPrimary">#6200EE</item>
-    </style>
-</resources>
